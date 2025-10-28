@@ -18,7 +18,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                sh 'git clone https://github.com/vodaassure/attendance_system.git .'
+                sh 'git clone https://github.com/MAH76915/DevOps-Project.git .'
             }
         }
 
