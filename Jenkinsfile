@@ -36,7 +36,7 @@ pipeline {
         stage('Test') {
             steps {
                 sh '''
-                    source venv/bin/activate
+                    . venv/bin/activate
                     python -m pytest tests/
                 '''
             }
@@ -85,3 +85,4 @@ pipeline {
         }
     }
 }
+
