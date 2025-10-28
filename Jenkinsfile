@@ -1,8 +1,8 @@
 pipeline {
-    agent any  // Runs directly on the Jenkins host
+    agent any
 
     options {
-        skipDefaultCheckout(true) // Prevent Jenkins from auto-checking out code
+        skipDefaultCheckout(true)
     }
 
     parameters {
@@ -12,7 +12,6 @@ pipeline {
     environment {
         DATABASE_URL = credentials('attendance-db-url')
         SECRET_KEY = credentials('attendance-secret-key')
-        PYTHONPATH = "/tmp/pip-packages/lib/python3.9/site-packages"
     }
 
     stages {
@@ -22,20 +21,37 @@ pipeline {
             }
         }
 
-        stage('Build') {
+        stage('Setup Python Environment') {
             steps {
-                sh 'ls -la' // Confirm requirements.txt is present
-                sh 'python3 -m pip install --no-cache-dir --prefix=/tmp/pip-packages -r requirements.txt'
-                sh 'python3 -m pip install --no-cache-dir --prefix=/tmp/pip-packages pytest'
+                sh '''
+                    python3.10 -m venv venv
+                    source venv/bin/activate
+                    pip install --upgrade pip
+                    pip install -r requirements.txt
+                    pip install pytest
+                '''
             }
         }
 
         stage('Test') {
             steps {
                 sh '''
-                    export PYTHONPATH=/tmp/pip-packages
-                    python3 -m pip install --target=/tmp/pip-packages pytest
-                    python3 -m pytest tests/
+                    source venv/bin/activate
+                    python -m pytest tests/
+                '''
+            }
+        }
+
+        stage('Pre-Deploy Check') {
+            steps {
+                sh '''
+                    if lsof -i :8092; then
+                        echo "Port 8092 is in use. Stopping process..."
+                        PID=$(lsof -ti :8092)
+                        kill -9 $PID
+                    else
+                        echo "Port 8092 is free."
+                    fi
                 '''
             }
         }
