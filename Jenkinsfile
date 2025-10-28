@@ -25,19 +25,17 @@ pipeline {
         stage('Build') {
             steps {
                 sh 'ls -la' // Confirm requirements.txt is present
-                sh 'pip install --no-cache-dir --prefix=/tmp/pip-packages -r requirements.txt'
-                sh 'pip install --no-cache-dir --prefix=/tmp/pip-packages pytest'
-                
+                sh 'python3 -m pip install --no-cache-dir --prefix=/tmp/pip-packages -r requirements.txt'
+                sh 'python3 -m pip install --no-cache-dir --prefix=/tmp/pip-packages pytest'
             }
         }
-        
+
         stage('Test') {
             steps {
-                
                 sh '''
                     export PYTHONPATH=/tmp/pip-packages
-                    pip install --target=/tmp/pip-packages pytest
-                    python3.10 -m pytest tests/
+                    python3 -m pip install --target=/tmp/pip-packages pytest
+                    python3 -m pytest tests/
                 '''
             }
         }
