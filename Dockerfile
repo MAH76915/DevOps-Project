@@ -41,4 +41,4 @@ RUN mkdir -p instance
 EXPOSE 8000
 
 # Run gunicorn
-CMD ["gunicorn", "--bind", "0.0.0.0:8091", "run:app"]
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "run:app"]
