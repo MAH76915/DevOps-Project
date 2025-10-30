@@ -45,12 +45,12 @@ pipeline {
         stage('Pre-Deploy Check') {
             steps {
                 sh '''
-                    if lsof -i :8092; then
-                        echo "Port 8092 is in use. Stopping process..."
-                        PID=$(lsof -ti :8092)
+                    if lsof -i :8000; then
+                        echo "Port 8000 is in use. Stopping process..."
+                        PID=$(lsof -ti :8000)
                         kill -9 $PID
                     else
-                        echo "Port 8092 is free."
+                        echo "Port 8000 is free."
                     fi
                 '''
             }
