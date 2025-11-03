@@ -21,7 +21,7 @@ pipeline {
             }
         }
 
-        stage('Setup Python Environment') {
+        stage('Build') {
             steps {
                 sh '''
                     python3.10 -m venv venv
